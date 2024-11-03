@@ -1,24 +1,48 @@
-import logo from './logo.svg';
 import './App.css';
+import Post from './components/post/Post';
+import SubRedditInfo from './components/subredditInfo/SubRedditInfo';
+import { React, useEffect,useState } from 'react';
+import { IntlProvider, FormattedMessage } from "react-intl";
+
+
+
+function loadMessages(locale) {
+  switch (locale) {
+    case "en":
+      return import("./lang/en.json");
+    case "es":
+      return import("./lang/es.json");
+    default:
+      return import("./lang/en.json");
+  }
+}
 
 function App() {
+  const [locale, setLocale] = useState("en");
+  const [messages, setMessages] = useState(null);
+
+  useEffect(() => {
+    loadMessages(locale).then((data) => setMessages(data.default));
+  }, [locale]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <IntlProvider locale={"en"} messages={messages}>
+        <header className="App-header">
+        <div style={{ textAlign: "center" }}>
+          <h3><FormattedMessage id="lang"/></h3>
+            <select value={locale} onChange={(e) => setLocale(e.target.value)}>
+              <option value="en">English</option>
+              <option value="es">Español</option>
+            </select>
+        </div>
+        </header>
+        <Post/>
+        
+        <SubRedditInfo/>
+      </IntlProvider>
     </div>
+    
   );
 }
 
