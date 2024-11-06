@@ -5,11 +5,23 @@
     padding-right: 1vw;
     padding-top: 1vh;
     padding-bottom: 1vh;
+
+    margin-bottom: 1vh;
 }
 
 .actualStats{
     display:flex;
     justify-content:left;
+}
+
+.rules {
+    background-color: white;
+    color: black;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    margin-top: 1vh;
 }
 
 .stat{
@@ -22,7 +34,7 @@
 }
 
 .subredditinfo{
-    min-width: 20vw;
+    min-width: 15vw;
 }
 
 #birthImage{
@@ -32,3 +44,4 @@
     max-height: 4vh;
     padding: 1vw;
 }
+
