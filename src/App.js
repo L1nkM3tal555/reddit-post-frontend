@@ -37,9 +37,11 @@ function App() {
             </select>
         </div>
         </header>
-        <Post/>
+        <div className='content-container'>
+          <Post className='post'/>
+          <SubRedditInfo/>
+        </div>
         
-        <SubRedditInfo/>
       </IntlProvider>
     </div>
     

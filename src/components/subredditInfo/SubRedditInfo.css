@@ -1,0 +1,34 @@
+.subredditStats{
+    background-color: white;
+    color: black;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+}
+
+.actualStats{
+    display:flex;
+    justify-content:left;
+}
+
+.stat{
+    padding: 5%;
+}
+
+#creationDate{
+    color:#aaa8a8;
+    
+}
+
+.subredditinfo{
+    min-width: 20vw;
+}
+
+#birthImage{
+    background-color: transparent;
+    color: transparent;
+    max-width: 4vw;
+    max-height: 4vh;
+    padding: 1vw;
+}

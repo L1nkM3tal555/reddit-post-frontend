@@ -1,11 +1,44 @@
-import {React, useState} from 'react'
+import {React, useEffect, useState} from 'react'
 import Comment from '../comment/Comment';
+import './Post.css'
+
 function Post(){
-    let idSeq = 0
     const [commenting, setCommenting] = useState(false);
     const [repling, setRepling] = useState(false);
     const [comments, setComments] = useState([]);  // Almacena los comentarios publicados
     const [replyTo, setReplyTo] = useState(null);
+
+
+    const fetchComments = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/comments/list?format=json',{
+                mode: 'cors',
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                });
+            if (!response.ok) {
+                throw new Error('Error al obtener los comentarios');
+            }
+            let data = await response.json();
+            data = data.map(comment => ({
+                ...comment,
+                replies: comment.replies || []  // Si replies es undefined, asigna un array vacío
+            }));
+            setComments(data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        fetchComments();
+    }, []);
+
 
     const handleCommenting = () =>{
         setCommenting(!commenting)
@@ -28,18 +61,77 @@ function Post(){
         
     }
 
-    const handleNewComment = (actualEditorContent) =>{
-        idSeq++;
-        setComments([...comments, {id: idSeq, content: actualEditorContent, replies: []}]);
+    const handleNewComment = async (actualEditorContent) =>{
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(actualEditorContent, 'text/html');
+        const textContent = doc.body.textContent || "";
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/comments/', {
+                method: 'POST',
+                mode: 'cors',
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                body: JSON.stringify({content: textContent, responseComment: null})
+                
+            });
+
+            if (!response || !response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+        const data = await response.json();
+        setComments([...comments, data]);
+        console.log('Success:', data);
+        }
+        catch (err){
+            console.log(err)
+        }
+        
         //setActualEditorContent('');
     }
 
     const addReply = (comments, parentId, reply) =>{
+        console.log('Se entró a addReply')
         
-        return comments.map( comment=>{
+        return comments.map( async comment=>{
             if (comment.id === parentId){
+
+                try {
+                    const response = await fetch('http://127.0.0.1:8000/api/comments/'+parentId+'/reply', {
+                        method: 'POST',
+                        mode: 'cors',
+                        cache: "no-cache",
+                        credentials: "same-origin",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        redirect: "follow",
+                        referrerPolicy: "no-referrer",
+                        body: JSON.stringify(reply),
+                        
+                    })
+        
+                    if (!response || !response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+        
+                    const data = await response.json();
+                    console.log(data);
+                }
+                catch (err){
+                    console.log(err.mesage)
+                }
+
                 const comentario = {...comment, replies: [...comment.replies, reply]};
-                console.log("Respuesta: " + comentario)
+                console.log("Comentario")
+                console.log(comentario)
                 return comentario;
             }
             else if (comment.replies.length > 0){
@@ -51,24 +143,36 @@ function Post(){
     };
 
     const handleNewReply = (parentId, actualEditorContent) =>{
-        idSeq++;
-        const updatedComments = addReply(comments, parentId, {id: idSeq, content: actualEditorContent, replies: []});
-        console.log("Updated comments: " + updatedComments)
-        setComments(updatedComments);
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(actualEditorContent, 'text/html');
+        const textContent = doc.body.textContent || "";
+
+        console.log(comments)
+
+        addReply(comments, parentId, {content: textContent, responseComment:parentId});
+        setRepling(false)
+        setReplyTo(null)
+        fetchComments()
         //setActualEditorContent('');
 
     }
 
     const renderComments = (comments) => {
-        console.log(comments)
+        
         return comments.map((comment) => (
-            <div key={comment.id}>
-                <div dangerouslySetInnerHTML={{__html: comment.content}}/>
-                <button onClick={() => setReplyTo(comment.id)}>Reply</button>
+            <div className='comment' key={comment.id}>
+                <div className='commentTitle'>
+                    <img className='userImage' src= '/userPicture.png'/>
+                    <h5>User:</h5>
+                </div>
+                
+                <div className='commentText' dangerouslySetInnerHTML={{__html: comment.content}}/>
+                <button onClick={() => {setReplyTo(null); setRepling(false);}}>Cancel</button>
+                <button onClick={() => {setReplyTo(comment.id); setRepling(!repling);}}>Reply</button>
 
                 {repling === true && comment.id === replyTo && (<Comment sendContent = {getCommentContent} parentId = {comment.id}/>)}
 
-                <div>
+                <div className='replies'>
                     {comment.replies.length > 0 && (renderComments(comment.replies))}
                 </div>
             </div>
@@ -77,13 +181,16 @@ function Post(){
     };
 
     return (
-        <div>
+        <div className='post'>
             <h2>What AI won't replace in your programming</h2>
-            <button className="commentButton" onClick={handleCommenting}>Comment</button>
-            <p># of comments {comments.length}</p>
+            <div className='actionsSection'>
+                <button id="commentButton" onClick={handleCommenting}><img className='commentImage' src="/chat-box.svg" height ="90" width="480" /></button>
+                <p>{comments.length} Comments</p>
+            </div>
+            
             {commenting === true && (<Comment sendContent = {getCommentContent} parentId = {null}/>)}
             <h3>Comments</h3>
-            <div>
+            <div className='replies'>
                 {renderComments(comments)}
             </div>
         </div>

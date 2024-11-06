@@ -1,0 +1,15 @@
+.editor{
+    min-height: fit-content;
+    color:black;
+    padding-left: 1vw;
+    border-left: 2px solid #8b8b8b;
+}
+
+#buttonSection{
+    display: flex;
+    justify-content: right;
+}
+
+.button{
+    margin: 1%;
+}

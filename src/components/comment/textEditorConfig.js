@@ -12,7 +12,7 @@ import {
 	Table,
 	TableToolbar,
 	Underline,
-	Undo
+	Undo,
 } from 'ckeditor5';
 
 export const config =
@@ -21,6 +21,9 @@ export const config =
         items: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'link', 'insertTable', 'blockQuote', '|', 'outdent', 'indent'],
         shouldNotGroupWhenFull: true
     },
+    autoGrow_minHeight: 200, // Altura mínima del editor
+    autoGrow_maxHeight: 600, // Altura máxima a la que puede crecer
+    autoGrow_bottomSpace: 50, // Espacio inferior extra cuando llega al máximo
     plugins: [
         AccessibilityHelp,
         Autosave,
@@ -52,8 +55,9 @@ export const config =
             }
         }
     },
-    placeholder: '',
+    placeholder: 'What are your thoughts?',
     table: {
         contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
-    }
+    },
+    contentsCss: 'body { font-size: 5px; }'
 }

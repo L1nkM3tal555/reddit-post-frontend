@@ -1,5 +1,5 @@
-import {React, useState} from 'react'
-
+import {React, useState, useRef} from 'react'
+import './Comment.css'
 import { ClassicEditor } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { config } from './textEditorConfig';
@@ -8,7 +8,7 @@ import 'ckeditor5/ckeditor5.css';
 function Comment(props){
     const [editorContent, setEditorContent] = useState('');
     
-
+    //Enviar la información del texto al componente Post
     const clickSubmit = () => {
 
         if (editorContent.length > 0){
@@ -21,18 +21,23 @@ function Comment(props){
 
     return(
         <div>
-            <h5>User</h5>
-            <CKEditor
-                editor={ClassicEditor}
-                config={config}
-                data={editorContent}
-                onChange={(event, editor) => {
-                    setEditorContent(editor.getData());  // Actualiza el estado con el contenido del editor
-                }}
-            />
+            <p>Comment as User</p>
+            <div className='editor'>
+                <CKEditor
+                    editor={ClassicEditor}
+                    config={config}
+                    data={editorContent}
+                    onChange={(event, editor) => {
+                        setEditorContent(editor.getData());  // Actualiza el estado con el contenido del editor
+                    }}
+                />
+            </div>
+           
+            <div id='buttonSection'>
+                <button className="button">Cancel</button>
+                <button className="button" onClick={clickSubmit}>Publish</button>
+            </div>
             
-            <button className="commentButton">Cancel</button>
-            <button onClick={clickSubmit}>Publish</button>
             
             
         </div>

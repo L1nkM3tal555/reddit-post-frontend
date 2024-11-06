@@ -1,0 +1,52 @@
+.comment{
+    margin-left: 2vw;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    border-left: 2px solid #8b8b8b;
+    padding-left: 2vw;
+    padding-right: 1vw;
+    padding-top: 3vh;
+    padding-bottom: 2vh;
+    margin-top: 2px;
+}
+
+.userImage{
+    height: 5vh;
+    margin-right: 1vw;
+}
+
+.commentTitle{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.post{
+    background-color: white;
+    color: black;
+    padding: 1vw;
+    min-width: 65vw;
+}
+
+.actionsSection{
+    display:flex;
+    justify-content:left;
+}
+
+.commentText{
+    padding-bottom: 2vh;
+}
+
+#commentButton{
+    display: inline-block;
+    background: none;
+    border:none;
+    padding: 1%;
+    cursor: pointer;
+}
+
+.commentImage{
+    background-color: transparent;
+    color: transparent;
+    max-width: 3vw;
+    max-height: 3vh;
+}
